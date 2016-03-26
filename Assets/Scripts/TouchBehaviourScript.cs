@@ -48,6 +48,28 @@ public class TouchBehaviourScript : MonoBehaviour {
 			}
 		}
 		#endif 
+		#if UNITY_ANDROID
+		// inicio do toque
+		if(Input.touchCount > 0 && toqueIniciado 
+			== false & Input.GetTouch(0) .phase == TouchPhase.Began){
+			// verifica se tocou 
+			Vector2 toque = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+			if(VerificaToque(toque)){
+
+				Inicio(toque);
+			}
+		}
+		// soltar o toque
+		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended & toqueIniciado == true){
+			toqueIniciado = false;
+			Vector2 toque = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+			if( Vector2.Distance(posicaoInicial,toque) > 1 ){
+				//&& VerificaToque(toque)
+				Finalizar(toque);
+			}
+		}			
+		#endif
+
 	}
 
 	private bool VerificaToque(Vector2 posicao){

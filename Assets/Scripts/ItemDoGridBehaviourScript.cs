@@ -28,9 +28,12 @@ public class ItemDoGridBehaviourScript : MonoBehaviour {
 	/**
 	 * Posiciona o item dentro do tabuleiro
 	*/
-	private void Posicionar(int x, int y){
+	public void Posicionar(int x, int y){
 		this._x = x;
 		this._y = y;
+
+		gameObject.name = string.Format ("{0},{1}",x,y);
+
 	}
 
 	// Use this for initialization
@@ -46,7 +49,12 @@ public class ItemDoGridBehaviourScript : MonoBehaviour {
 		box.isTrigger = true;
 
 	}
-	
+
+
+	public void Colorir(Color32 cor){	
+		spriteRenderer.color = cor;
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
