@@ -29,12 +29,27 @@ public class TouchBehaviourScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		#if UNITY_EDITOR  
+			ToquePC();		 
+		#elif UNITY_ANDROID
+			ToqueMobile();		
+		#elif UNITY_WINRT_8_1
+			ToqueMobile();		
+		#elif UNITY_WEBGL
+			ToquePC();		
+		#endif
+
+
+
+
+	}
+
+	private void ToquePC(){
 		// tocou com o botão esqquerdo
 		if(Input.GetMouseButtonDown(0) & toqueIniciado == false){
 			// verifica se tocou 
 			Vector2 toque = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			if(VerificaToque(toque)){
-				
+
 				Inicio(toque);
 			}
 		}
@@ -42,13 +57,15 @@ public class TouchBehaviourScript : MonoBehaviour {
 		if(Input.GetMouseButtonUp(0) & toqueIniciado == true){
 			toqueIniciado = false;
 			Vector2 toque = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			if( Vector2.Distance(posicaoInicial,toque) > 1 ){
+			if( Vector2.Distance(posicaoInicial,toque) > 0.5f ){
 				//&& VerificaToque(toque)
 				Finalizar(toque);
 			}
 		}
-		#endif 
-		#if UNITY_ANDROID
+	
+	}
+
+	private void ToqueMobile(){
 		// inicio do toque
 		if(Input.touchCount > 0 && toqueIniciado 
 			== false & Input.GetTouch(0) .phase == TouchPhase.Began){
@@ -67,9 +84,7 @@ public class TouchBehaviourScript : MonoBehaviour {
 				//&& VerificaToque(toque)
 				Finalizar(toque);
 			}
-		}			
-		#endif
-
+		}		
 	}
 
 	private bool VerificaToque(Vector2 posicao){

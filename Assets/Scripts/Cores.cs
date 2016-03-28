@@ -36,6 +36,10 @@ public class Cores
 		cores [1] = GetRgb (128,229,255,255); // azul
 		cores [2] = GetRgb (255,128,128,255); // vermelho
 		cores [3] = GetRgb (135,222,135,255); // verde
+		cores [4] = GetRgb (255,182,182,255); // rosa
+		cores [5] = GetRgb (224,181,224,255); // roxo
+		cores [6] = GetRgb (255,184,96,255); // laranja
+		cores [7] = GetRgb (203,203,203,255); // cinza
 
 
 	}
@@ -55,4 +59,5 @@ public class Cores
 
 
 }
+
 

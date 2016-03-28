@@ -19,48 +19,90 @@ public class GridBehaviourScript : MonoBehaviour {
 	// array do grid deve
 	private ItemDoGridBehaviourScript[,] _grid;
 
-	private Color32[] cores = new Color32[8];
+	private ItemDoGridBehaviourScript[,] _gridEspelho; // quarda o posicionamento inicial do grid
+
+	private GameObject aux; // auxiliar para movimentação das pecas
+	private GameObject piso; // pai do piso
+	private GameObject prefabPiso; // prefab do piso
 
 	// inicializar
 	public void Inicializar(){
-		// incializa as cores
-		cores[0] = new Color32();
+		//montagem do pizo
+		piso = new GameObject ("PisoTransform");
+		piso.transform.parent = transform;
 
+		prefabPiso = Resources.Load<GameObject> ("Prefabs/GridBackgroud") as GameObject;
 
 		this._grid = new ItemDoGridBehaviourScript[this.colunas,this.linhas];
-
+		this._gridEspelho = new ItemDoGridBehaviourScript[this.colunas,this.linhas];
 		// posiciona a camera
 		float aux = (colunas - 1) / 2.0f;
 		aux *= ESPACAMENTO_ENTRE_PECAS;
-		Camera.main.transform.position = new Vector3(aux, (linhas -1 ) /2, -10);
-		Camera.main.orthographicSize = colunas + 1;
+		Camera.main.transform.position = new Vector3(aux, (linhas - 0.5f ) /2, -10);
+		Camera.main.orthographicSize = colunas + 0.5f;
+
+		int valor = linhas * colunas;
+		int volta = 1; // contador das voltas em y
+		//posicionamento dos itens
+		for (int x = 0; x < colunas; x++) {	
+			for (int y = 0; y < linhas; y++) {					
+				// posicionar 
+				Posicionar(Instantiate (prefabDoPreenchimento) as ItemDoGridBehaviourScript, x, y);
+
+				_grid [x, y].label.text = (x+1).ToString();
+				_grid [x, y].valor = valor;
+				_grid [x, y].Colorir(Cores.GetInstance().Cor(y));
+				_grid [x, y].Posicionar (x, y);
+				// colocando o piso 
+				GameObject _itemPiso = Instantiate(prefabPiso,_grid [x, y].transform.position,Quaternion.identity) as GameObject;
+				_itemPiso.transform.parent = piso.transform;
+
+
+
+			}		
+
+		}
+
+		Misturar ((colunas * linhas) / 2);
 
 		for (int x = 0; x < colunas; x++) {
 			for (int y = 0; y < linhas; y++) {
-
-				_grid [x, y] = Instantiate (prefabDoPreenchimento); 
-				_grid [x, y].transform.position = new Vector2 (x * ESPACAMENTO_ENTRE_PECAS,y * ESPACAMENTO_ENTRE_PECAS);
-				_grid [x, y].transform.parent = transform;
-				_grid [x, y].label.text = (x + 1).ToString();
-				_grid [x, y].valor = x + 1;
-				_grid [x, y].Colorir(Cores.GetInstance().Cor(x));
-				_grid [x, y].Posicionar (x, y);
+				_gridEspelho [x,y] = _grid[x,y];
 			}
+
 		}
 
 
-		//MoveLinhaDireita (0);
-		//MoveLinhaEsquerda (1);
+	}
+	//posiciono um item no grid
 
-			Misturar ((colunas * linhas) / 2);
+	private void Posicionar(ItemDoGridBehaviourScript item, int x,int y){
+
+		_grid [x, y] = item;
+		_grid [x, y].transform.parent = transform;
+		_grid [x, y].transform.position = new Vector2 (x * ESPACAMENTO_ENTRE_PECAS,y * ESPACAMENTO_ENTRE_PECAS);
+
 
 	}
+
+	// reverte o grid para o estado inicial
+	public void Reverte(){
+
+		for (int x = 0; x < colunas; x++) {
+			for (int y = 0; y < linhas; y++) {
+				Posicionar (_gridEspelho [x,y], x , y);
+			}
+
+		}
+
+	}
+
 
 
 	// misturar
 	public void Misturar(int movimentos){
 
-		Debug.Log (movimentos+" movimentos");
+		//Debug.Log (movimentos+" movimentos");
 		int aux = 0;
 		while (aux < movimentos) {
 			// randomisa uma posicao no grid
@@ -96,7 +138,6 @@ public class GridBehaviourScript : MonoBehaviour {
 	}
 	// movimenta a coluna de acordo com a direcao passada
 	public void MoveColunaCima(int coluna){
-
 
 		ItemDoGridBehaviourScript itemAtual = _grid [coluna, 0];
 		Vector2 posicaoItemInicial = itemAtual.transform.position;
@@ -175,10 +216,10 @@ public class GridBehaviourScript : MonoBehaviour {
 	// verifica se o grid está em ordem
 	public bool EstaEmOrdem(){
 
-		for (int x = 0; x < colunas; x++) {
-			for (int y = 0; y < linhas -1 ; y++) {
+		for (int y = linhas -1; y>= 0; y--) {
+			for (int x = colunas -1; x > 0; x--) {
 
-				if (_grid [x, y].valor != _grid [x, y + 1].valor) {
+				if ((_grid [x, y].valor - _grid [x-1,y].valor) != 1) {
 					return false;
 				}
 
@@ -200,6 +241,8 @@ public class GridBehaviourScript : MonoBehaviour {
 		Debug.Log("Final da rolagem de "+de);
 	
 	}
+
+
 
 }
 
