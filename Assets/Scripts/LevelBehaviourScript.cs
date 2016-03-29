@@ -15,6 +15,11 @@ public class LevelBehaviourScript : MonoBehaviour {
 	public ItemDoGridBehaviourScript prefab; 
 	public GridBehaviourScript Grid;
 	/// <summary>
+	/// Dica Inicial
+	/// </summary>
+	public GameObject Dica;
+
+	/// <summary>
 	/// The audio source fx.
 	/// </summary>
 	public AudioSource audioSourceFx;
@@ -42,6 +47,11 @@ public class LevelBehaviourScript : MonoBehaviour {
 		
 		linhas  = PlayerPrefs.GetInt ("_linhas_");
 		colunas = PlayerPrefs.GetInt ("_colunas_");
+
+		if (PlayerPrefs.GetInt ("_tutorial_") == 0) {
+			Dica.SetActive (true);
+			PlayerPrefs.SetInt ("_tutorial_", 1);
+		}
 
 		Inicializar ();
 	}
@@ -151,6 +161,10 @@ public class LevelBehaviourScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		if (Input.touchCount > 0 | Input.GetMouseButton (0)) {
+			Dica.SetActive (false);
+		}
 		
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			ControleDeCenas.CarregarCena ("start");

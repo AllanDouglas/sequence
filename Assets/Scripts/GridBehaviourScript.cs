@@ -43,8 +43,8 @@ public class GridBehaviourScript : MonoBehaviour
         Camera.main.transform.position = new Vector3(aux, (linhas - 0.5f) / 2, -10);
         Camera.main.orthographicSize = colunas + 0.5f;
 
-        int valor = linhas * colunas;
-        int volta = 1; // contador das voltas em y
+        // int valor = linhas * colunas;
+        //int volta = 1; // contador das voltas em y
                        //posicionamento dos itens
         for (int x = 0; x < colunas; x++)
         {
@@ -54,7 +54,7 @@ public class GridBehaviourScript : MonoBehaviour
                 Posicionar(Instantiate(prefabDoPreenchimento) as ItemDoGridBehaviourScript, x, y);
 
                 _grid[x, y].label.text = (x + 1).ToString();
-                _grid[x, y].valor = valor;
+                _grid[x, y].valor = x;
                 _grid[x, y].Colorir(Cores.GetInstance().Cor(x));
                 _grid[x, y].Posicionar(x, y);
                 // colocando o piso 
@@ -238,12 +238,12 @@ public class GridBehaviourScript : MonoBehaviour
     public bool EstaEmOrdem()
     {
 
-        for (int y = linhas - 1; y >= 0; y--)
+        for (int x = 0; x < this.colunas; x++)
         {
-            for (int x = colunas - 1; x > 0; x--)
+            for (int y = 0; y < this.linhas -1 ; y++)
             {
-
-                if (_grid[x, y].valor != _grid[x - 1, y].valor)
+               
+                if (_grid[x, y].valor != _grid[x , y + 1].valor)
                 {
                     return false;
                 }
